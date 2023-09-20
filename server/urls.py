@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 from userauth import urls as user_urls
+from notes import urls as notes_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include(user_urls))
+    path('api/auth/', include(user_urls)),
+    path('api/notes/', include(notes_urls))
 ]
