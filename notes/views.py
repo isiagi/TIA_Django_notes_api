@@ -64,7 +64,7 @@ class NotesDetailApiView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
         
     # update
-    def put(self, request, note_id, *args, **kwargs):
+    def patch(self, request, note_id, *args, **kwargs):
 
         notes_instance = self.get_object(note_id, request.user.id)
 
