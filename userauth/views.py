@@ -60,7 +60,7 @@ def signup(request):
         token = Token.objects.create(user=user)
 
         # Respond with status of 200 with Token and user data
-        return Response({'Token': token.key, 'User': serializer.data})
+        return Response({'Token': token.key, 'User': serializer.data}, status=status.HTTP_201_CREATED)
     
     # Throw errors if serialization of data failed
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
