@@ -115,6 +115,43 @@ class NotesDetailApiView(APIView):
         notes_instance.delete()
 
         return Response({"res": "Object deleted!"}, status=status.HTTP_200_OK)
+    
+
+from django.http import FileResponse
+from django.views import View
+from reportlab.pdfgen import canvas
+from io import BytesIO
+
+class NotesPdfApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        data = Notes.objects.all()
+
+        buffer = BytesIO()
+
+        p = canvas.Canvas(buffer)
+
+
+        # p.drawString(100, 750, "Hello World")
+        y_coordinate = 750
+        for item in data:
+            title = item.title
+            description = item.description
+            # due_date = item.due_date.strftime("%Y-%m-%d")
+            completed = item.completed
+
+            p.drawString(100, y_coordinate, f"Title: {title}")
+            p.drawString(100, y_coordinate - 20, f"Description: {description}")
+            # p.drawString(100, y_coordinate - 40, f"Due Date: {due_date}")
+            p.drawString(100, y_coordinate - 40, f"Due Date: {completed}")
+            y_coordinate -= 60  # Move down by 60 units for the next set of lines
+
+        p.showPage()
+        p.save()
+
+        buffer.seek(0)
+
+        return FileResponse(buffer, as_attachment=True, filename='example.pdf')
+
 
 
 
