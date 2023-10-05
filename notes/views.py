@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from .models import Notes
 from .serializers import NotesSerializer
@@ -7,17 +8,31 @@ from .serializers import NotesSerializer
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework import permissions
 
-class NotesListApiView(APIView):
+from rest_framework.generics import ListAPIView
+from rest_framework import filters
+
+
+# Generic view for getting notes --> Easy to use filters and order on generic views
+class GetNotesApiView(ListAPIView):
+    serializer_class=NotesSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['completed', 'priority']
+    ordering_fields = ['created_at', 'priority', 'due_date']
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        return Notes.objects.filter(user=self.request.user.id)
+
+# Create note View
+class NotesCreateApiView(APIView):
     # add authentication and permissions middleware
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-    # Get all notes of logined user
-    def get(self, request, *args, **kwargs):
-        notes = Notes.objects.filter(user=request.user.id)
-        serializer = NotesSerializer(notes, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     # Create a new note for logged in user
     def post(self, request, *args, **kwargs):
 
