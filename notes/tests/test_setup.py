@@ -6,7 +6,8 @@ from rest_framework.authtoken.models import Token
 class TestSetUp(APITestCase):
 
     def setUp(self):
-        self.notes_url = reverse('notes')
+        self.get_notes_url = reverse('get_notes')
+        self.create_notes_url = reverse('create_notes')
         self.notes_detail_url = reverse('notes_detail', kwargs={'note_id': 1})
         self.user = User.objects.create_superuser('admin', 'admin@admin.com', 'admin123')
         self.token = Token.objects.create(user=self.user)
