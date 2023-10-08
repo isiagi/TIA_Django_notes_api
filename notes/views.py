@@ -118,44 +118,35 @@ class NotesDetailApiView(APIView):
     
 
 from django.http import FileResponse
-from django.views import View
-from reportlab.pdfgen import canvas
-from io import BytesIO
+
+from .create_pdf import create_pdf
+from .send_email import send
+from django.http import HttpResponse
 
 class NotesPdfApiView(APIView):
-    def get(self, request, *args, **kwargs):
-        data = Notes.objects.all()
+    def get(self, request):
 
-        buffer = BytesIO()
-
-        p = canvas.Canvas(buffer)
-
-
-        # p.drawString(100, 750, "Hello World")
-        y_coordinate = 750
-        for item in data:
-            title = item.title
-            description = item.description
-            # due_date = item.due_date.strftime("%Y-%m-%d")
-            completed = item.completed
-
-            p.drawString(100, y_coordinate, f"Title: {title}")
-            p.drawString(100, y_coordinate - 20, f"Description: {description}")
-            # p.drawString(100, y_coordinate - 40, f"Due Date: {due_date}")
-            p.drawString(100, y_coordinate - 40, f"Due Date: {completed}")
-            y_coordinate -= 60  # Move down by 60 units for the next set of lines
-
-        p.showPage()
-        p.save()
+        buffer = create_pdf(Notes)
 
         buffer.seek(0)
 
         return FileResponse(buffer, as_attachment=True, filename='example.pdf')
-
-
-
-
     
+
+class PublishPdfApiView(APIView):
+    def post(self, request):
+
+        buffer = create_pdf(Notes) 
+ 
+        email = send('PDF Report', 'Please find the attached PDF report.', ['codedeveloper47@gmail.com'])
+        
+        buffer.seek(0)
+        email.attach('Notes.pdf', buffer.read(), 'application/pdf')
+        email.send()
+
+        buffer.close()
+
+        return HttpResponse('PDF sent by email successfully')
 
 
 
