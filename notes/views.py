@@ -124,19 +124,27 @@ from .send_email import send
 from django.http import HttpResponse
 
 class NotesPdfApiView(APIView):
-    def get(self, request):
+    # add authentication and permissions middleware
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
-        buffer = create_pdf(Notes)
+    def get(self, request):
+        user = self.request.user.id
+        buffer = create_pdf(Notes, user)
 
         buffer.seek(0)
 
-        return FileResponse(buffer, as_attachment=True, filename='example.pdf')
+        return FileResponse(buffer, as_attachment=True, filename='Notes.pdf')
     
 
 class PublishPdfApiView(APIView):
+    # add authentication and permissions middleware
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    
     def post(self, request):
-
-        buffer = create_pdf(Notes) 
+        user = self.request.user.id
+        buffer = create_pdf(Notes, user) 
  
         email = send('PDF Report', 'Please find the attached PDF report.', ['codedeveloper47@gmail.com'])
         

@@ -5,9 +5,9 @@ from reportlab.lib import colors, units
 from io import BytesIO
 
 
-def create_pdf(Notes):
+def create_pdf(Notes, userId):
                 # Retrieve data from your models, including title, description, and due-date
-        data = Notes.objects.all()
+        data = Notes.objects.filter(user=userId)
 
         # Create a BytesIO buffer to receive the PDF data
         buffer = BytesIO()
