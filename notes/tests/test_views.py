@@ -16,6 +16,42 @@ class TestViews(TestSetUp):
         self.assertEqual(res.status_code, 200)
 
 
+    def test_get_all_completed_filtered_notes_authenticated_user(self):
+
+        # Provide authorization credentials --> option 2
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
+
+        # Get item from --self.notes_url-- route in the parent class
+        res = self.client.get(self.get_filtered_notes_url)
+        
+        # Assert res.status_code == 200
+        self.assertEqual(res.status_code, 200)
+
+
+    def test_get_all_createdAt_ordered_notes_authenticated_user(self):
+    
+        # Provide authorization credentials --> option 2
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
+
+        # Get item from --self.notes_url-- route in the parent class
+        res = self.client.get(self.get_ordered_notes_url)
+        
+        # Assert res.status_code == 200
+        self.assertEqual(res.status_code, 200)
+
+
+    def test_get_all_priority_ordered_notes_authenticated_user(self):
+        
+        # Provide authorization credentials --> option 2
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
+
+        # Get item from --self.notes_url-- route in the parent class
+        res = self.client.get(self.get_ordered_notes_by_priority_url)
+        
+        # Assert res.status_code == 200
+        self.assertEqual(res.status_code, 200)
+
+
     def test_user_can_create_note(self):
         #provide authorization credentials
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
@@ -56,8 +92,11 @@ class TestViewsDetail(TestSetUp):
         #provide authorization credentials
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
 
+        # Update note title to Updated Title
+        self.note_data['title'] = "Updated Title"
+
         # Update on item that does not exist
-        res = self.client.patch(self.notes_detail_url, self.update_note_data)
+        res = self.client.patch(self.notes_detail_url, self.note_data)
 
         # assert res.status_code equal 400
         self.assertEqual(res.status_code, 400)
@@ -69,12 +108,21 @@ class TestViewsDetail(TestSetUp):
 
         # Create a new item 
         self.client.post(self.create_notes_url, self.note_data)
+        
+        # Update note title to Updated Title
+        self.note_data['title'] = "Updated Title"
 
         # Update it with new data of --self.update_note_data--
-        res = self.client.patch(self.notes_detail_url, self.update_note_data)
+        res = self.client.patch(self.notes_detail_url, self.note_data)
+
+        # import pdb
+        # pdb.set_trace()
 
         # Assert the new data is not equal to the old data
         self.assertNotEqual(res.data, self.note_data)
+
+        # assert updated date title is Updated Title from Hey of the origin data
+        self.assertEqual(res.data['title'], "Updated Title")
 
         # assert res.status_code equal 201
         self.assertEqual(res.status_code, 201)
@@ -100,6 +148,17 @@ class TestViewsDetail(TestSetUp):
 
         # Delete created item
         res = self.client.delete(self.notes_detail_url)
+
+        # assert res.status_code equal 200
+        self.assertEqual(res.status_code, 200)
+
+
+    def test_can_generate_pdf_view(self):
+        #provide authorization credentials
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
+
+        # Create new item
+        res = self.client.get(self.generate_pdf_url)
 
         # assert res.status_code equal 200
         self.assertEqual(res.status_code, 200)

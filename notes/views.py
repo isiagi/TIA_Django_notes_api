@@ -115,10 +115,46 @@ class NotesDetailApiView(APIView):
         notes_instance.delete()
 
         return Response({"res": "Object deleted!"}, status=status.HTTP_200_OK)
-
-
-
     
+
+from django.http import FileResponse
+
+from .create_pdf import create_pdf
+from .send_email import send
+from django.http import HttpResponse
+
+class NotesPdfApiView(APIView):
+    # add authentication and permissions middleware
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = self.request.user.id
+        buffer = create_pdf(Notes, user)
+
+        buffer.seek(0)
+
+        return FileResponse(buffer, as_attachment=True, filename='Notes.pdf')
+    
+
+class PublishPdfApiView(APIView):
+    # add authentication and permissions middleware
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request):
+        user = self.request.user.id
+        buffer = create_pdf(Notes, user) 
+ 
+        email = send('PDF Report', 'Please find the attached PDF report.', ['codedeveloper47@gmail.com'])
+        
+        buffer.seek(0)
+        email.attach('Notes.pdf', buffer.read(), 'application/pdf')
+        email.send()
+
+        buffer.close()
+
+        return HttpResponse('PDF sent by email successfully')
 
 
 
