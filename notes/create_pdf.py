@@ -19,18 +19,19 @@ def create_pdf(Notes, userId):
         table_data = []
 
         # Define table headers
-        table_data.append(['Title', 'Description', 'Due Date', 'Completed'])
+        table_data.append(['Title', 'Description', 'Category', 'Due Date', 'Completed'])
 
         # Add data to the table
         for item in data:
             title = item.title
             description = item.description
+            category = item.category
             completed = item.completed
             due_date = item.due_date.strftime("%Y-%m-%d")  # Format due date as desired
-            table_data.append([title, description, due_date, completed])
+            table_data.append([title, description, category, due_date, completed])
 
         # Create the table and set styles
-        table = Table(table_data, colWidths = [2 * units.inch, 2 * units.inch, 2 * units.inch],rowHeights = 0.4 * units.inch)
+        table = Table(table_data, colWidths = [1.5 * units.inch, 1.5 * units.inch, 1.5 * units.inch],rowHeights = 0.4 * units.inch)
         table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),

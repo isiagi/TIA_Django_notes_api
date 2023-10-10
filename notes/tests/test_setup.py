@@ -20,6 +20,7 @@ class TestSetUp(APITestCase):
             "title": "hey",
             "description": "hello",
             "due_date": "2033-09-20",
+            "category": "Personal",
             "user": self.user.id
         }
 
