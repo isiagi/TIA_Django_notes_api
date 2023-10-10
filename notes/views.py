@@ -19,7 +19,7 @@ class GetNotesApiView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['completed', 'priority']
+    filterset_fields = ['completed', 'priority', 'category']
     ordering_fields = ['created_at', 'priority', 'due_date']
     ordering = ['-created_at']
 
@@ -40,8 +40,13 @@ class NotesCreateApiView(APIView):
             "title": request.data.get("title"),
             "description": request.data.get("description"),
             "due_date": request.data.get("due_date"),
+            "category": request.data.get("category"),
             "user": request.user.id,
         }
+
+        # short cut below --> makes tests failed for now
+        # request.data['user'] = request.user.id
+
         serializer = NotesSerializer(data=data)
 
         if serializer.is_valid():
@@ -146,7 +151,7 @@ class PublishPdfApiView(APIView):
         user = self.request.user.id
         buffer = create_pdf(Notes, user) 
  
-        email = send('PDF Report', 'Please find the attached PDF report.', ['codedeveloper47@gmail.com'])
+        email = send('PDF Report', 'Please find the attached PDF report.', [self.request.user.email])
         
         buffer.seek(0)
         email.attach('Notes.pdf', buffer.read(), 'application/pdf')
