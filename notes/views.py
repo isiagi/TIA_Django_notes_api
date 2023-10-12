@@ -10,6 +10,7 @@ from rest_framework import permissions
 
 from rest_framework.generics import ListAPIView
 from rest_framework import filters
+from django.http import HttpResponse
 
 
 # Generic view for getting notes --> Easy to use filters and order on generic views
@@ -160,6 +161,85 @@ class PublishPdfApiView(APIView):
         buffer.close()
 
         return HttpResponse('PDF sent by email successfully')
+
+
+import csv  
+
+class CSVExportView(ListAPIView):
+    # add authentication and permissions middleware
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    
+    serializer_class = NotesSerializer
+
+    def get_queryset(self):
+        return Notes.objects.filter(user=self.request.user.id)
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+        response ['Content-Disposition'] = 'attachment; filename="Notes.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['id', 'title', 'description', 'created_at', 'completed', 'due_date','priority'])
+
+        for item in self.get_queryset():
+            writer.writerow([
+                item.id,
+                item.title,
+                item.description,
+                item.created_at,
+                item.completed,
+                item.due_date,
+                item.priority,
+            ])
+
+        return response
+    
+
+import openpyxl
+from openpyxl.utils.dataframe import dataframe_to_rows
+
+class ExcelExportView(APIView):
+    # add authentication and permissions middleware
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        queryset = Notes.objects.filter(user=self.request.user.id)
+
+        # serializer data
+        serializer = NotesSerializer(queryset, many=True)
+
+        # Create excel workbook and add a worksheet
+        workbook = openpyxl.Workbook()
+        worksheet = workbook.active
+
+        # Add header to the Excel worksheet
+        headers = ['title', 'description', 'created_at', 'completed', 'due_date','priority']
+        worksheet.append(headers)
+
+        # Add data to the excel worksheet
+        for item in serializer.data:
+            row_data = [
+                item['id'],
+                item['title'],
+                item['description'],
+                item['created_at'],
+                item['completed'],
+                item['due_date'],
+                item['priority'],
+            ]
+            worksheet.append(row_data)
+
+        # Create an HTTP response with the excel file
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="Notes.xlsx"'
+
+        # Save the workbook to the response
+        workbook.save(response)
+
+        return response
+
 
 
 
