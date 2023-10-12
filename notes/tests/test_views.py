@@ -1,4 +1,5 @@
 from .test_setup import TestSetUp
+from django.urls import reverse
 
 class TestViews(TestSetUp):
     def test_get_all_notes_for_authenticated_user(self):
@@ -80,10 +81,13 @@ class TestViewsDetail(TestSetUp):
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
 
         # Create new item to be fetched
-        self.client.post(self.create_notes_url, self.note_data)
+        response = self.client.post(self.create_notes_url, self.note_data)
+        new_note_id = response.data['id'] 
+
+        notes_detail_url = reverse('notes_detail', kwargs={'note_id': new_note_id})
 
         # Get item by id
-        res = self.client.get(self.notes_detail_url)
+        res = self.client.get(notes_detail_url)
 
         # assert res.status_code equal 200
         self.assertEqual(res.status_code, 200)
@@ -107,13 +111,16 @@ class TestViewsDetail(TestSetUp):
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
 
         # Create a new item 
-        self.client.post(self.create_notes_url, self.note_data)
+        response = self.client.post(self.create_notes_url, self.note_data)
+        new_note_id = response.data['id'] 
+
+        notes_detail_url = reverse('notes_detail', kwargs={'note_id': new_note_id})
         
         # Update note title to Updated Title
         self.note_data['title'] = "Updated Title"
 
         # Update it with new data of --self.update_note_data--
-        res = self.client.patch(self.notes_detail_url, self.note_data)
+        res = self.client.patch(notes_detail_url, self.note_data)
 
         # import pdb
         # pdb.set_trace()
@@ -144,14 +151,18 @@ class TestViewsDetail(TestSetUp):
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
 
         # Create new item
-        self.client.post(self.create_notes_url, self.note_data)
+        response = self.client.post(self.create_notes_url, self.note_data)
+        new_note_id = response.data['id'] 
+
+        notes_detail_url = reverse('notes_detail', kwargs={'note_id': new_note_id})
 
         # Delete created item
-        res = self.client.delete(self.notes_detail_url)
+        res = self.client.delete(notes_detail_url)
 
         # assert res.status_code equal 200
         self.assertEqual(res.status_code, 200)
 
+class TestFileGeneratingViews(TestSetUp):
 
     def test_can_generate_pdf_view(self):
         #provide authorization credentials
