@@ -66,14 +66,16 @@ You can run tests for the userauth and notes apps using the following commands:
 
 ## API Endpoints
 
-- /api/auth/login/: User login (POST)
-- /api/auth/logout/: User logout (POST)
-- /api/auth/register/: User registration (POST)
-- /api/auth/forgot_password/: Password reset request link (POST)
-- /api/notes/: CRUD operations for notes (GET)
+- /api/auth/login: User login (POST)
+- /api/auth/logout: User logout (POST)
+- /api/auth/signup: User registration (POST)
+- /api/auth/forgot_password: Password reset request link (POST)
+- /api/notes: CRUD operations for notes (GET)
 - /api/notes/create: CRUD operations for notes (POST)
 - /api/notes/<int:note_id>: CRUD operations for notes (GET, DELETE, PUT)
-- /api/notes/generate_pdf/: Generate PDF of notes (GET)
-- /api/notes/publish_pdf/: Send PDF of notes by email (POST)
+- /api/notes/generate_pdf: Generate PDF of notes (GET)
+- /api/notes/publish_pdf: Send PDF of notes by email (POST)
+- /api/notes/generate_csv: Generate CSV of notes (GET)
+- /api/notes/generate_excel: Generate Excel Workbook of notes (GET)
 
 

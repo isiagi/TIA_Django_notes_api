@@ -162,3 +162,25 @@ class TestViewsDetail(TestSetUp):
 
         # assert res.status_code equal 200
         self.assertEqual(res.status_code, 200)
+
+
+    def test_can_generate_csv_view(self):
+            #provide authorization credentials
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
+
+        # Create new item
+        res = self.client.get(self.generate_csv_url)
+
+        # assert res.status_code equal 200
+        self.assertEqual(res.status_code, 200)
+
+
+    def test_can_generate_excel_view(self):
+            #provide authorization credentials
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
+
+        # Create new item
+        res = self.client.get(self.generate_excel_url)
+
+        # assert res.status_code equal 200
+        self.assertEqual(res.status_code, 200)

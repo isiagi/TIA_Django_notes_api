@@ -12,6 +12,8 @@ class TestSetUp(APITestCase):
         self.get_ordered_notes_by_priority_url = f"{reverse('get_notes')}?ordering=priority"
         self.create_notes_url = reverse('create_notes')
         self.generate_pdf_url = reverse('generate_pdf')
+        self.generate_csv_url = reverse('generate_csv')
+        self.generate_excel_url = reverse('generate_excel')
         self.notes_detail_url = reverse('notes_detail', kwargs={'note_id': 1})
         self.user = User.objects.create_superuser('admin', 'admin@admin.com', 'admin123')
         self.token = Token.objects.create(user=self.user)
