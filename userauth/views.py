@@ -49,6 +49,7 @@ def signup(request):
     serializer = UserSerializer(data=request.data)
 
     if serializer.is_valid():
+        # save data to database
         serializer.save()
 
         # Fetch save user by username from database and hash password
@@ -93,7 +94,7 @@ def forgot_password(request):
         token = PasswordResetTokenGenerator().make_token(user)
         reset_url = reverse('reset-password', kwargs={'encoded_pk': encoded_pk,'token': token})
 
-        reset_link = f"localhost:8000{reset_url}"
+        reset_link = f"localhost:5173{reset_url}"
 
         send('Reset Password Link', reset_link, [email])
 
