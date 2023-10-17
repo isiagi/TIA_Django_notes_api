@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'userauth',
@@ -52,6 +53,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware'
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+   'http://localhost:5173' 
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -75,13 +86,33 @@ TEMPLATES = [
 WSGI_APPLICATION = 'server.wsgi.application'
 
 
+import environ
+import os
+
+# Initialize Django-environ
+env = environ.Env()
+
+# Define a path to your project's .env file (optional)
+env_file = os.path.join(BASE_DIR, ".env")
+
+# Load environment variables from the .env file (if it exists)
+env.read_env(env_file)
+
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env("DB_NAME"),
+        'USER': env("DB_USER"),
+        'PASSWORD': env("DB_PASSWORD"),
+        'HOST': env("DB_HOST"),
+        'PORT': env("DB_PORT"),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
+        }
     }
 }
 
@@ -133,18 +164,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-import environ
-import os
-
-# Initialize Django-environ
-env = environ.Env()
-
-# Define a path to your project's .env file (optional)
-env_file = os.path.join(BASE_DIR, ".env")
-
-# Load environment variables from the .env file (if it exists)
-env.read_env(env_file)
+# Email service below
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
