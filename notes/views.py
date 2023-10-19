@@ -40,7 +40,10 @@ class NotesCreateApiView(APIView):
         data = {
             "title": request.data.get("title"),
             "description": request.data.get("description"),
+            "completed": request.data.get("completed"),
             "due_date": request.data.get("due_date"),
+            "user_email": request.user.email,
+            "priority": request.data.get("priority"),
             "category": request.data.get("category"),
             "user": request.user.id,
         }
@@ -97,6 +100,9 @@ class NotesDetailApiView(APIView):
             "title": request.data.get("title"),
             "description": request.data.get("description"),
             "due_date": request.data.get("due_date"),
+            "user_email": request.user.email,
+            "priority": request.data.get("priority"),
+            "category": request.data.get("category"),
             "user": request.user.id,
             }
 
@@ -140,7 +146,7 @@ class NotesPdfApiView(APIView):
 
         buffer.seek(0)
 
-        return FileResponse(buffer, as_attachment=True, filename='Notes.pdf')
+        return FileResponse(buffer, as_attachment=True, filename='Notes.pdf', content_type='application/pdf')
     
 
 class PublishPdfApiView(APIView):
