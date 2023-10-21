@@ -57,9 +57,12 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware'
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-]
+CORS_ALLOW_ALL_ORIGINS = True    #Allow all origins
+
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:5173',
+#     'https://notes-client-drab.vercel.app'
+# ]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
    'http://localhost:5173' 
