@@ -1,3 +1,4 @@
+from datetime import date
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -26,6 +27,22 @@ class GetNotesApiView(ListAPIView):
 
     def get_queryset(self):
         return Notes.objects.filter(user=self.request.user.id)
+    
+class PastDueDateView(ListAPIView):
+    serializer_class = NotesSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+
+        # Get the current date
+        current_date = date.today()
+
+        # Filter records where the due date is less than the current date
+        queryset = Notes.objects.filter(user=user_id, due_date__lt=current_date)
+
+        return queryset
 
 # Create note View
 class NotesCreateApiView(APIView):
