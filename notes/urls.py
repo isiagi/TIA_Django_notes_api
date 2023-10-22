@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import NotesCreateApiView, NotesDetailApiView, GetNotesApiView, NotesPdfApiView, PublishPdfApiView, CSVExportView, ExcelExportView
+from .views import NotesCreateApiView, NotesDetailApiView, GetNotesApiView, NotesPdfApiView, PublishPdfApiView, CSVExportView, ExcelExportView, PastDueDateView
 
 urlpatterns = [
     path('', GetNotesApiView.as_view(), name="get_notes"),
     path('create', NotesCreateApiView.as_view(), name="create_notes"),
+    path('due_dated', PastDueDateView.as_view(), name="due_notes"),
     path('<int:note_id>', NotesDetailApiView.as_view(), name="notes_detail"),
     path('generate_pdf', NotesPdfApiView.as_view(), name="generate_pdf"),
     path('publish_pdf', PublishPdfApiView.as_view(), name="publish_pdf"),
