@@ -14,6 +14,8 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.7, 3.8, 3.9]
+    env:
+      DB_NAME: freedb_notes_api
 
     steps:
     - uses: actions/checkout@v3
