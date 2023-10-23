@@ -94,7 +94,7 @@ def forgot_password(request):
         token = PasswordResetTokenGenerator().make_token(user)
         reset_url = reverse('reset-password', kwargs={'encoded_pk': encoded_pk,'token': token})
 
-        reset_link = f"localhost:5173{reset_url}"
+        reset_link = f"https://notes-client-drab.vercel.app{reset_url}"
 
         send('Reset Password Link', reset_link, [email])
 
