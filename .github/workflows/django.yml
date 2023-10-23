@@ -20,6 +20,8 @@ jobs:
       DB_PASSWORD: ${{secrets.DB_PASSWORD}}
       DB_HOST: ${{secrets.DB_HOST}}
       DB_PORT: ${{secrets.DB_PORT}}
+      HOST_USER: ${{secrets.DB_PORT}}
+      HOST_PASSWORD: ${{secrets.HOST_PASSWORD}}
 
     steps:
     - uses: actions/checkout@v3
