@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'userauth',
     'django_filters',
     'notes',
+    'django_celery_results',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -176,3 +178,18 @@ EMAIL_HOST_PASSWORD = env("HOST_PASSWORD")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+
+# Celery Configurtion Options
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = ''
+
+# Stores your tasks in django database
+CELERY_RESULT_BACKEND = 'django-db'
+
+# Celery beat setting
+CELERY_BEAT_SCHEDULER = ''
