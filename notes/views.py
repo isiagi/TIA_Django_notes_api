@@ -1,3 +1,4 @@
+from datetime import date
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -26,6 +27,22 @@ class GetNotesApiView(ListAPIView):
 
     def get_queryset(self):
         return Notes.objects.filter(user=self.request.user.id)
+    
+class PastDueDateView(ListAPIView):
+    serializer_class = NotesSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+
+        # Get the current date
+        current_date = date.today()
+
+        # Filter records where the due date is less than the current date
+        queryset = Notes.objects.filter(user=user_id, due_date__lt=current_date)
+
+        return queryset
 
 # Create note View
 class NotesCreateApiView(APIView):
@@ -40,7 +57,10 @@ class NotesCreateApiView(APIView):
         data = {
             "title": request.data.get("title"),
             "description": request.data.get("description"),
+            "completed": request.data.get("completed"),
             "due_date": request.data.get("due_date"),
+            "user_email": request.user.email,
+            "priority": request.data.get("priority"),
             "category": request.data.get("category"),
             "user": request.user.id,
         }
@@ -97,6 +117,9 @@ class NotesDetailApiView(APIView):
             "title": request.data.get("title"),
             "description": request.data.get("description"),
             "due_date": request.data.get("due_date"),
+            "user_email": request.user.email,
+            "priority": request.data.get("priority"),
+            "category": request.data.get("category"),
             "user": request.user.id,
             }
 
@@ -140,7 +163,7 @@ class NotesPdfApiView(APIView):
 
         buffer.seek(0)
 
-        return FileResponse(buffer, as_attachment=True, filename='Notes.pdf')
+        return FileResponse(buffer, as_attachment=True, filename='Notes.pdf', content_type='application/pdf')
     
 
 class PublishPdfApiView(APIView):

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-udwrv65isj6xd^3a_veln)psz&&6i4e$=g6)hpo(hq2^j$(r-u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -59,14 +59,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware'
 ]
 
-
-# CORS_ALLOW_HEADERS = ['*']
-# ALLOWED_HOSTS=['*']
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOW_ALL_ORIGINS = True    #Allow all origins
 
 # CORS_ALLOWED_ORIGINS = [
 #     'http://localhost:5173',
+#     'https://notes-client-drab.vercel.app'
 # ]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [

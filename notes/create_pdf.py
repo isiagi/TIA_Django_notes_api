@@ -1,53 +1,51 @@
 from django.http import FileResponse
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from reportlab.lib import colors, units
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.units import inch
+from reportlab.platypus import Spacer
 from io import BytesIO
+from reportlab.lib.styles import getSampleStyleSheet
 
+def create_pdf(Notes, user_id):
+    # Retrieve data from your models, including title, description, and due-date
+    data = Notes.objects.filter(user=user_id)
 
-def create_pdf(Notes, userId):
-                # Retrieve data from your models, including title, description, and due-date
-        data = Notes.objects.filter(user=userId)
+    # Create a BytesIO buffer to receive the PDF data
+    buffer = BytesIO()
 
-        # Create a BytesIO buffer to receive the PDF data
-        buffer = BytesIO()
+    # Create the PDF document using ReportLab
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
 
-        # Create the PDF document using ReportLab
-        doc = SimpleDocTemplate(buffer, pagesize=letter)
+    # Create a list to hold PDF elements
+    elements = []
 
-        # Create a list to hold table data
-        table_data = []
+    # Define a style for the heading
+    heading_style = getSampleStyleSheet()["Heading1"]
 
-        # Define table headers
-        table_data.append(['Title', 'Description', 'Category', 'Due Date', 'Completed'])
+    # Add a heading for each note
+    for item in data:
+        title = item.title
+        description = item.description
+        priority = item.priority
+        category = item.category
+        completed = item.completed
+        due_date = item.due_date.strftime("%Y-%m-%d")  # Format due date as desired
 
-        # Add data to the table
-        for item in data:
-            title = item.title
-            description = item.description
-            category = item.category
-            completed = item.completed
-            due_date = item.due_date.strftime("%Y-%m-%d")  # Format due date as desired
-            table_data.append([title, description, category, due_date, completed])
+        # Create a heading with the title
+        heading = Paragraph(title, heading_style)
+        elements.append(heading)
 
-        # Create the table and set styles
-        table = Table(table_data, colWidths = [1.5 * units.inch, 1.5 * units.inch, 1.5 * units.inch],rowHeights = 0.4 * units.inch)
-        table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ]))
+        # Add note details
+        elements.append(Paragraph(f"Description: {description}", getSampleStyleSheet()["Normal"]))
+        elements.append(Paragraph(f"Category: {category}", getSampleStyleSheet()["Normal"]))
+        elements.append(Paragraph(f"Due Date: {due_date}", getSampleStyleSheet()["Normal"]))
+        elements.append(Paragraph(f"Completed: {completed}", getSampleStyleSheet()["Normal"]))
+        elements.append(Paragraph(f"Priority: {priority}", getSampleStyleSheet()["Normal"]))
 
-        # Build the PDF document
-        elements = []
-        elements.append(table)
-        doc.build(elements)
+        # Add some space between notes
+        elements.append(Spacer(1, 0.2 * inch))
 
-        # FileResponse sets the Content-Disposition header so that browsers
-        # present the option to save the file.
-        # buffer.seek(0)
-        return buffer
+    # Build the PDF document
+    doc.build(elements)
+
+    return buffer
