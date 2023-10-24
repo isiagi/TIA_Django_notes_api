@@ -116,7 +116,12 @@ DATABASES = {
         'HOST': config("DB_HOST", default=env("DB_HOST")),
         'PORT': config("DB_PORT", default=env("DB_PORT")),
         'TEST': {
-            'NAME': 'server_test',
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'mysql-test',
+            'USER': 'avnadmin',
+            'PASSWORD': 'AVNS_o2IGmHHTibRi1krISLs',
+            'HOST': 'mysql-test-isiagigeofrey0-c56d.a.aivencloud.com',
+            'PORT': '27807'
         },
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
