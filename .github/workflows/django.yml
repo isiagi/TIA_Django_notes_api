@@ -14,13 +14,13 @@ jobs:
       matrix:
         python-version: [3.7, 3.8, 3.9]
     env:
-      DB_NAME: ${{ vars.DB_NAME }}
-      DB_USER: ${{ vars.DB_USER }}
-      DB_PASSWORD: ${{ vars.DB_PASSWORD }}
-      DB_HOST: ${{ vars.DB_HOST }}
-      DB_PORT: ${{ vars.DB_PORT }}
-      HOST_USER: ${{ vars.DB_PORT }}
-      HOST_PASSWORD: ${{ vars.HOST_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      HOST_USER: ${{ secrets.HOST_USER }}
+      HOST_PASSWORD: ${{ secrets.HOST_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v3
