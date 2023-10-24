@@ -8,7 +8,7 @@ class Notes(models.Model):
     PRIORITY = Choices('High', 'Moderate', 'Low')
     
     title = models.CharField(max_length=150, blank=True)
-    description = models.TextField(max_length=150, blank=True)
+    description = models.TextField(max_length=1000, blank=True)
     completed = models.BooleanField(default=False, blank=True, null=True)
     due_date = models.DateField(null=True, blank=True)
     priority = models.CharField(choices=PRIORITY, max_length=150, null=True, blank=True, default=PRIORITY.Low)
