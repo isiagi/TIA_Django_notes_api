@@ -34,9 +34,9 @@ jobs:
           pip install -r requirements.txt
       - name: Debug Database Configuration
         run: |
-          echo "DB_NAME: $DB_NAME"
+          echo "DB_NAME: ${{ secrets.DB_NAME }}"
           echo "DB_USER: $DB_USER"
-          echo "DB_HOST: $DB_HOST"
+          echo "DB_HOST: ${{ secrets.DB_HOST }}"
           echo "DB_PORT: $DB_PORT"
       - name: Run Tests
         run: |
