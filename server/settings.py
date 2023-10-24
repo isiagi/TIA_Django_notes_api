@@ -117,7 +117,7 @@ DATABASES = {
         'PORT': config("DB_PORT", default=env("DB_PORT")),
         'TEST': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'mysql-test',
+            'NAME': 'defaultdb',
             'USER': 'avnadmin',
             'PASSWORD': 'AVNS_o2IGmHHTibRi1krISLs',
             'HOST': 'mysql-test-isiagigeofrey0-c56d.a.aivencloud.com',
