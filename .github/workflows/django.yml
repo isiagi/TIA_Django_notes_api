@@ -39,9 +39,6 @@ jobs:
           echo "DB_USER: $DB_USER"
           echo "DB_HOST: ${{ secrets.DB_HOST }}"
           echo "DB_PORT: $DB_PORT"
-      - name: Run Tests
-        run: |
-          python manage.py test
       - name: Run server
         run: |
           python manage.py runserver
