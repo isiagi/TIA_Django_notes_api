@@ -105,14 +105,16 @@ env.read_env(env_file)
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+from decouple import config
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': env("DB_NAME"),
-        'USER': env("DB_USER"),
-        'PASSWORD': env("DB_PASSWORD"),
-        'HOST': env("DB_HOST"),
-        'PORT': env("DB_PORT"),
+        'NAME': config("DB_NAME", default=env("DB_NAME")),
+        'USER': config("DB_USER", default=env("DB_USER")),
+        'PASSWORD': config("DB_PASSWORD", default=env("DB_PASSWORD")),
+        'HOST': config("DB_HOST", default=env("DB_HOST")),
+        'PORT': config("DB_PORT", default=env("DB_PORT")),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
         }
