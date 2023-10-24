@@ -115,6 +115,9 @@ DATABASES = {
         'PASSWORD': config("DB_PASSWORD", default=env("DB_PASSWORD")),
         'HOST': config("DB_HOST", default=env("DB_HOST")),
         'PORT': config("DB_PORT", default=env("DB_PORT")),
+        'TEST': {
+            'NAME': 'server_test',
+        },
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
         }
